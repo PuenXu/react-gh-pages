@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // Seat component representing a clickable seat
 const Seat = ({ row, col, onClick, selected }) => (
@@ -36,18 +36,6 @@ const Section = ({ title, rows, cols, canSelect }) => {
     }
   };
 
-  // const addBlock = () => {
-  //   // Check if selectedSeats is not empty before adding it to blocks
-  //   if (selectedSeats.length > 0) {
-  //     console.log(selectedSeats);
-  //     setBlocks(prevBlocks => [...prevBlocks, selectedSeats]);
-  //     // Clear selectedSeats after adding it to a block
-  //     console.log(blocks);
-  //     setSelectedSeats([]);
-  //     console.log(selectedSeats);
-  //   }
-  // };  
-
   const addBlock = () => {
     if (selectedSeats.length > 0) {
       console.log(selectedSeats);
@@ -55,12 +43,6 @@ const Section = ({ title, rows, cols, canSelect }) => {
       setSelectedSeats([]);
     }
   };
-  
-  useEffect(() => {
-    // This will log the updated blocks state
-    console.log(blocks);
-  }, [blocks]);
-  
 
   return (
     <div style={{ padding: '4px' }}>
@@ -78,11 +60,12 @@ const Section = ({ title, rows, cols, canSelect }) => {
           ))
         ))}
       </div>
+
       {selectedSeats.length > 0 && (
         <div>
           <h3>Selected Seats</h3>
           {selectedSeats.map((seat, index) => (
-            <p key={index}>{`Row: ${seat.row}, Column: ${seat.col}`}</p>
+            <p key={index}>{`Row: ${String.fromCharCode(64 + seat.row).toUpperCase()}, Column: ${seat.col}`}</p>
           ))}
           <button onClick={addBlock}>Add block</button>
         </div>
@@ -93,7 +76,7 @@ const Section = ({ title, rows, cols, canSelect }) => {
             <span key={index}>
               {block.length > 0 &&
                 block.map((seat, j) => (
-                  <p key={j}>{`${seat.row}-${seat.col}`}</p>
+                  <p key={j}>{`${String.fromCharCode(64 + seat.row).toUpperCase()}-${seat.col}`}</p>
                 ))}
             </span>
           </div>
