@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 
 // Seat component representing a clickable seat
-const Seat = ({ row, col, onClick, selected }) => (
+const Seat = ({ row, col, onClick, selected, blocked }) => (
   <div
     style={{
       border: '1px solid black',
       padding: '4px',
       margin: '2px',
       cursor: 'pointer',
-      backgroundColor: selected ? 'lightblue' : 'white', // Change background color if selected
+      backgroundColor:
+      selected && !blocked
+        ? 'lightblue' // Light blue when selected and not blocked
+        : blocked && !selected
+        ? 'blue' // Blue when blocked and not selected
+        : 'white', // White when neither selected nor blocked
     }}
     onClick={() => onClick(row, col)}
   >
@@ -19,6 +24,7 @@ const Seat = ({ row, col, onClick, selected }) => (
 // Section component containing a grid of seats
 const Section = ({ title, rows, cols, canSelect }) => {
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [blockedSeats, setBlockedSeats] = useState([]);
   const [blocks, setBlocks] = useState([]);
 
   const handleSeatClick = (row, col) => {
@@ -39,6 +45,7 @@ const Section = ({ title, rows, cols, canSelect }) => {
   const addBlock = () => {
     if (selectedSeats.length > 0) {
       console.log(selectedSeats);
+      setBlockedSeats(prevSeats => [...prevSeats, ...selectedSeats]);
       setBlocks(prevBlocks => [...prevBlocks, selectedSeats]);
       setSelectedSeats([]);
     }
@@ -56,6 +63,7 @@ const Section = ({ title, rows, cols, canSelect }) => {
               col={colIndex + 1}
               onClick={() => handleSeatClick(rowIndex + 1, colIndex + 1)}
               selected={selectedSeats.some(seat => seat.row === rowIndex + 1 && seat.col === colIndex + 1)}
+              blocked={blockedSeats.some(seat => seat.row === rowIndex + 1 && seat.col === colIndex + 1)}
             />
           ))
         ))}
