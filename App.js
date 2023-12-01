@@ -157,8 +157,14 @@ const App = () => {
     setSelectedShow(shows[index]);
   };
 
-  const handleUnselect = () => {
+  const handleUnselectShow = () => {
     setSelectedShow(null);
+  };
+
+  const handleDeleteShow = () => {
+    setShows(prevShows => prevShows.filter(show => show !== selectedShow));
+    setSelectedShow(null);
+    setShowNum(prevNum => prevNum - 1);
   };
 
   const creatingShow = () => {
@@ -247,7 +253,8 @@ const App = () => {
                       <p><strong>Show:</strong> {selectedShow.name}</p>
                       <p><strong>Date:</strong> {selectedShow.date}</p>
                       <p><strong>Time:</strong> {selectedShow.time}</p>
-                      <button onClick={handleUnselect}>unselectShow</button>
+                      <button onClick={handleUnselectShow}>unselectShow</button>
+                      <button onClick={handleDeleteShow}>deleteShow</button>
                     </div>
                     <div style={{ position: 'absolute', right: 100, top:100 }}>
                       <h3>Venue Layout</h3>
