@@ -215,25 +215,37 @@ const App = () => {
           <div>
           <div>
           {!showCreating ? (
-            <div style={{ position: 'absolute', left: 100, top:50 }}>
+            <div>
               <div>
                 {!selectedShow && (
-                  <div>
+                  <div style={{ position: 'absolute', left: 100, top:50 }}>
                     <h3>Your list of shows</h3>
                     <p>You have {showNum} shows</p>
                     <button onClick={creatingShow}>Create show</button>
                   </div>)
                 }
-                {!selectedShow && shows.map((show, index) => (
-                  <Show key={index} {...show} onClick={() => handleShowClick(index)} />
-                ))}
+                <div style={{ position: 'absolute', left: 100, top:200 }}>
+                  {!selectedShow && shows.map((show, index) => (
+                    <Show key={index} {...show} onClick={() => handleShowClick(index)} />
+                  ))}
+                </div>
                 {selectedShow && (
                   <div>
-                    <h2>Selected Show</h2>
-                    <p><strong>Show:</strong> {selectedShow.name}</p>
-                    <p><strong>Date:</strong> {selectedShow.date}</p>
-                    <p><strong>Time:</strong> {selectedShow.time}</p>
-                    <button onClick={handleUnselect}>unselectShow</button>
+                    <div style={{ position: 'absolute', left: 100, top:50 }}>
+                      <h2>Selected Show</h2>
+                      <p><strong>Show:</strong> {selectedShow.name}</p>
+                      <p><strong>Date:</strong> {selectedShow.date}</p>
+                      <p><strong>Time:</strong> {selectedShow.time}</p>
+                      <button onClick={handleUnselect}>unselectShow</button>
+                    </div>
+                    <div style={{ position: 'absolute', right: 100, top:100 }}>
+                      <h3>Venue Layout</h3>
+                      <div style={{ display: 'flex' }}>
+                        <Section title="Left" rows={leftRow} cols={leftCol} canSelect={true}/>
+                        <Section title="Center" rows={centerRow} cols={centerCol} canSelect={true}/>
+                        <Section title="Right" rows={rightRow} cols={rightCol} canSelect={true}/>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
