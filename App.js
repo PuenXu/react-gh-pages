@@ -68,89 +68,10 @@ const Show = ({ name, date, time, onClick }) => (
   </div>
 );
 
-// VenueManager component managing a list of shows
-const VenueManager = () => {
-  const [shows, setShows] = useState([]);
-  const [selectedShow, setSelectedShow] = useState(null);
-
-  const [showCreating, setShowCreating] = useState(false);
-  const [showCreated, setShowCreated] = useState(false);
-
-  const [showName, setShowName] = useState('');
-  const [showDate, setShowDate] = useState('');
-  const [showTime, setShowTime] = useState('');
-  const [showNum, setShowNum] = useState(0);
-
-  const handleShowClick = (index) => {
-    setSelectedShow(shows[index]);
-  };
-
-  const creatingShow = () => {
-    setShowCreating(true);
-  }
-
-  const createShow = () => {
-      setShowName('');
-      setShowDate('');
-      setShowTime('');
-      setShowNum(prevNum => prevNum + 1);
-      setShowCreating(false);
-      setShowCreated(true);
-  }
-
-  const displayDate = (date) => {
-    const month = parseInt(date / 10000, 10);
-    const day = parseInt((date - month * 10000) / 100, 10);
-    const year = date - month * 10000 - day * 100 + 2000;
-
-    return <p>Date: Month {month} / Day {day} / Year {year}</p>
-  }
-
-  const displayTime = (time) => {
-      const hour = parseInt(time / 100, 10);
-      const minute = time - hour * 100
-
-      return <p>Time: {hour} : {minute}</p>
-  }
-
-  return (
-    <div>
-      {!showCreating ? (
-      <div>
-        <button onClick={creatingShow}>Create show</button>
-        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          <h3>Your list of shows</h3>
-          {shows.map((show, index) => (
-            <Show key={index} {...show} onClick={() => handleShowClick(index)} />
-          ))}
-          {selectedShow && (
-            <div>
-              <h2>Selected Show</h2>
-              <p><strong>Show:</strong> {selectedShow.name}</p>
-              <p><strong>Date:</strong> {selectedShow.date}</p>
-              <p><strong>Time:</strong> {selectedShow.time}</p>
-            </div>
-          )}
-        </div>
-      </div>
-      ) : (
-      <div>
-        <input type="text" value={showName} onChange={(e) => setShowName(e.target.value)} placeholder="Show Name"/> <p></p>
-        <input type="number" value={showDate} onChange={(e) => setShowDate(parseInt(e.target.value, 10))} placeholder="Show Date in MMDDYY Format"/><p></p>
-        <input type="number" value={showTime} onChange={(e) => setShowTime(parseInt(e.target.value, 10))} placeholder="Show Time in HHMM Format"/><p></p>
-        <p>Confirm the information: </p>
-        <p>Show Name: {showName}</p> {displayDate(showDate)} {displayTime(showTime)}
-        <button onClick={createShow}>Submit</button>
-      </div>
-      )
-      }
-    </div>
-  );
-};
-
 // App component combining sections
 const App = () => {
   
+  // venues
   const [venueCreated, setVenueCreated] = useState(false);
   const [venueName, setVenueName] = useState('');
   const [leftRow, setLeftRow] = useState('');
@@ -206,6 +127,57 @@ const App = () => {
     }
   };
 
+  // shows
+  const [shows, setShows] = useState([]);
+  const [selectedShow, setSelectedShow] = useState(null);
+
+  const addShow = (newShow) => {
+    setShows((prevShows) => [...prevShows, newShow]);
+  };
+
+  const [showCreating, setShowCreating] = useState(false);
+
+  const [showName, setShowName] = useState('');
+  const [showDate, setShowDate] = useState('');
+  const [showTime, setShowTime] = useState('');
+  const [showNum, setShowNum] = useState(0);
+
+  const handleShowClick = (index) => {
+    setSelectedShow(shows[index]);
+  };
+
+  const creatingShow = () => {
+    setShowCreating(true);
+  }
+
+  const createShow = () => {
+    const month = parseInt(showDate / 10000, 10);
+    const day = parseInt((showDate - month * 10000) / 100, 10);
+    const year = showDate - month * 10000 - day * 100 + 2000;
+    const hour = parseInt(showTime / 100, 10);
+    const minute = showTime - hour * 100
+    addShow({ name: showName, date: `${year}-${month}-${day}`, time: `${hour}:${minute}` });
+    setShowName('');
+    setShowDate('');
+    setShowTime('');
+    setShowNum(prevNum => prevNum + 1);
+    setShowCreating(false);
+  }
+
+  const displayDate = (date) => {
+    const month = parseInt(date / 10000, 10);
+    const day = parseInt((date - month * 10000) / 100, 10);
+    const year = date - month * 10000 - day * 100 + 2000;
+
+    return <p>Date: Month {month} / Day {day} / Year {year}</p>
+  }
+
+  const displayTime = (time) => {
+    const hour = parseInt(time / 100, 10);
+    const minute = time - hour * 100
+
+    return <p>Time: {hour} : {minute}</p>
+  }
 
   return (
 
@@ -233,14 +205,57 @@ const App = () => {
                 <Section title="Right" rows={rightRow} cols={rightCol} canSelect={false}/>
               </div>
           </div>
-        </div>)
-      :(
-        <div style={{ position: 'absolute', left: 100, top:50 }}>
-          <VenueManager />
+        </div>
+      ):(
+        <div>
+          <div>
+          <div>
+          {!showCreating ? (
+            <div style={{ position: 'absolute', left: 100, top:50 }}>
+              <button onClick={creatingShow}>Create show</button>
+              <div>
+                <h3>Your list of shows</h3>
+                {shows.map((show, index) => (
+                  <Show key={index} {...show} onClick={() => handleShowClick(index)} />
+                ))}
+                {selectedShow && (
+                  <div>
+                    <h2>Selected Show</h2>
+                    <p><strong>Show:</strong> {selectedShow.name}</p>
+                    <p><strong>Date:</strong> {selectedShow.date}</p>
+                    <p><strong>Time:</strong> {selectedShow.time}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+          <div>
+            <div style={{ position: 'absolute', left: 100, top:50 }}>
+              <input type="text" value={showName} onChange={(e) => setShowName(e.target.value)} placeholder="Show Name"/> <p></p>
+              <input type="number" value={showDate} onChange={(e) => setShowDate(parseInt(e.target.value, 10))} placeholder="Show Date in MMDDYY Format"/><p></p>
+              <input type="number" value={showTime} onChange={(e) => setShowTime(parseInt(e.target.value, 10))} placeholder="Show Time in HHMM Format"/><p></p>
+              <p>Confirm the information: </p>
+              <p>Show Name: {showName}</p> {displayDate(showDate)} {displayTime(showTime)}
+              <button onClick={createShow}>Submit</button>
+            </div>
+            <div style={{ position: 'absolute', right: 100, top:100 }}>
+              <h3>Venue Layout</h3>
+              <div style={{ display: 'flex' }}>
+                <Section title="Left" rows={leftRow} cols={leftCol} canSelect={false}/>
+                <Section title="Center" rows={centerRow} cols={centerCol} canSelect={false}/>
+                <Section title="Right" rows={rightRow} cols={rightCol} canSelect={false}/>
+              </div>
+            </div>
+          </div>
+          )
+          }
+        </div>
       </div>
-      )
-      }
+          
     </div>
+      )
+    }
+  </div>
   )
 };
 
