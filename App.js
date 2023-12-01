@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Seat component representing a clickable seat
 const Seat = ({ row, col, onClick, selected }) => (
@@ -19,6 +19,7 @@ const Seat = ({ row, col, onClick, selected }) => (
 // Section component containing a grid of seats
 const Section = ({ title, rows, cols, canSelect }) => {
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [blocks, setBlocks] = useState([]);
 
   const handleSeatClick = (row, col) => {
     if (canSelect) {
@@ -34,6 +35,32 @@ const Section = ({ title, rows, cols, canSelect }) => {
       }
     }
   };
+
+  // const addBlock = () => {
+  //   // Check if selectedSeats is not empty before adding it to blocks
+  //   if (selectedSeats.length > 0) {
+  //     console.log(selectedSeats);
+  //     setBlocks(prevBlocks => [...prevBlocks, selectedSeats]);
+  //     // Clear selectedSeats after adding it to a block
+  //     console.log(blocks);
+  //     setSelectedSeats([]);
+  //     console.log(selectedSeats);
+  //   }
+  // };  
+
+  const addBlock = () => {
+    if (selectedSeats.length > 0) {
+      console.log(selectedSeats);
+      setBlocks(prevBlocks => [...prevBlocks, selectedSeats]);
+      setSelectedSeats([]);
+    }
+  };
+  
+  useEffect(() => {
+    // This will log the updated blocks state
+    console.log(blocks);
+  }, [blocks]);
+  
 
   return (
     <div style={{ padding: '4px' }}>
@@ -57,8 +84,20 @@ const Section = ({ title, rows, cols, canSelect }) => {
           {selectedSeats.map((seat, index) => (
             <p key={index}>{`Row: ${seat.row}, Column: ${seat.col}`}</p>
           ))}
+          <button onClick={addBlock}>Add block</button>
         </div>
       )}
+      {blocks.length > 0 && blocks.map((block, index) => (
+          <div>
+            <p>Block</p>
+            <span key={index}>
+              {block.length > 0 &&
+                block.map((seat, j) => (
+                  <p key={j}>{`${seat.row}-${seat.col}`}</p>
+                ))}
+            </span>
+          </div>
+        ))}
     </div>
   );
 };
