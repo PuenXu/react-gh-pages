@@ -18,11 +18,20 @@ const Seat = ({ row, col, onClick, selected }) => (
 
 // Section component containing a grid of seats
 const Section = ({ title, rows, cols, canSelect }) => {
-  const [selectedSeat, setSelectedSeat] = useState(null);
+  const [selectedSeats, setSelectedSeats] = useState([]);
 
   const handleSeatClick = (row, col) => {
-    if (canSelect){
-      setSelectedSeat({ row, col });
+    if (canSelect) {
+      // Check if the seat is already selected
+      const isSeatSelected = selectedSeats.some(seat => seat.row === row && seat.col === col);
+
+      if (!isSeatSelected) {
+        // Add the selected seat to the list
+        setSelectedSeats(prevSeats => [...prevSeats, { row, col }]);
+      } else {
+        // Remove the selected seat from the list if it's already selected
+        setSelectedSeats(prevSeats => prevSeats.filter(seat => !(seat.row === row && seat.col === col)));
+      }
     }
   };
 
@@ -36,16 +45,18 @@ const Section = ({ title, rows, cols, canSelect }) => {
               key={`${rowIndex}-${colIndex}`}
               row={rowIndex + 1}
               col={colIndex + 1}
-              onClick={handleSeatClick}
-              selected={selectedSeat && selectedSeat.row === rowIndex + 1 && selectedSeat.col === colIndex + 1}
+              onClick={() => handleSeatClick(rowIndex + 1, colIndex + 1)}
+              selected={selectedSeats.some(seat => seat.row === rowIndex + 1 && seat.col === colIndex + 1)}
             />
           ))
         ))}
       </div>
-      {selectedSeat && (
+      {selectedSeats.length > 0 && (
         <div>
-          <h3>Selected Seat</h3>
-          <p>{`Row: ${selectedSeat.row}, Column: ${selectedSeat.col}`}</p>
+          <h3>Selected Seats</h3>
+          {selectedSeats.map((seat, index) => (
+            <p key={index}>{`Row: ${seat.row}, Column: ${seat.col}`}</p>
+          ))}
         </div>
       )}
     </div>
