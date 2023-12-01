@@ -146,6 +146,10 @@ const App = () => {
     setSelectedShow(shows[index]);
   };
 
+  const handleUnselect = () => {
+    setSelectedShow(null);
+  };
+
   const creatingShow = () => {
     setShowCreating(true);
   }
@@ -212,10 +216,15 @@ const App = () => {
           <div>
           {!showCreating ? (
             <div style={{ position: 'absolute', left: 100, top:50 }}>
-              <button onClick={creatingShow}>Create show</button>
               <div>
-                <h3>Your list of shows</h3>
-                {shows.map((show, index) => (
+                {!selectedShow && (
+                  <div>
+                    <h3>Your list of shows</h3>
+                    <p>You have {showNum} shows</p>
+                    <button onClick={creatingShow}>Create show</button>
+                  </div>)
+                }
+                {!selectedShow && shows.map((show, index) => (
                   <Show key={index} {...show} onClick={() => handleShowClick(index)} />
                 ))}
                 {selectedShow && (
@@ -224,6 +233,7 @@ const App = () => {
                     <p><strong>Show:</strong> {selectedShow.name}</p>
                     <p><strong>Date:</strong> {selectedShow.date}</p>
                     <p><strong>Time:</strong> {selectedShow.time}</p>
+                    <button onClick={handleUnselect}>unselectShow</button>
                   </div>
                 )}
               </div>
